@@ -1,0 +1,9 @@
+.container {
+    display: grid;
+}
+
+.kakaoSignIn {
+    width: 310px;
+    height: 46px;
+    color: "FEE500";
+}

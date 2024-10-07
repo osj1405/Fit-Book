@@ -1,0 +1,13 @@
+.container {
+    min-width: 100vw;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 20px 1fr 20px;
+    align-items: center;
+    justify-items: center;
+    margin-top: 150px;
+}
+
+.logo {
+    justify-self: center;
+}
