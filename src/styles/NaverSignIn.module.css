@@ -1,14 +1,12 @@
-.container {
-    width: 310px;
-    height: 46px;
-}
 
-.kakaoSignIn {
+.naverSignIn {
     font-size: medium;
     font-weight: 400;
     width: 310px;
     height: 46px;
     border-radius: 5px;
     border-width: 0;
-    background-color: #FEE500;
+    background-color: #03C75A;
+    color: #FFFFFF;
+    margin-top: 20px;
 }
