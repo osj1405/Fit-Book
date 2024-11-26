@@ -1,7 +1,4 @@
-import { NextAuthConfig, DefaultSession } from "next-auth";
-import Kakao from "next-auth/providers/kakao";
-import Naver from "next-auth/providers/naver";
-
+import { NextAuthConfig } from "next-auth";
 
 export const authConfig:NextAuthConfig = {
     pages: {
@@ -17,7 +14,7 @@ export const authConfig:NextAuthConfig = {
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
-            const isOnHome = nextUrl.pathname ==='/';
+            const isOnHome = nextUrl.pathname.startsWith("/");
             if (isOnHome) {
               if (isLoggedIn)  return true;
               return false; // Redirect unauthenticated users to login page
@@ -26,7 +23,7 @@ export const authConfig:NextAuthConfig = {
             }
             return true;
           },
-          async session({ session, token, user }) {
+          async session({ session, token }) {
             // session 객체에 사용자 데이터를 포함시킵니다.
             if (token) {
                 session.user = {
@@ -48,8 +45,9 @@ export const authConfig:NextAuthConfig = {
           }
           return token;
       },
+
     },
-    providers: [Kakao, Naver],
+    providers: [],
 } satisfies NextAuthConfig;
 
 // declare module "next-auth" {
