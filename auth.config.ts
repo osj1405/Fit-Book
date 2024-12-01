@@ -3,7 +3,7 @@ import { NextAuthConfig } from "next-auth";
 export const authConfig:NextAuthConfig = {
     pages: {
         signIn: '/login',
-        error: `/auth_error`
+        error: `/auth_error`,
     },
     session: {
         strategy: 'jwt',
@@ -14,14 +14,20 @@ export const authConfig:NextAuthConfig = {
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
-            const isOnHome = nextUrl.pathname.startsWith("/");
+            const isSignUp = nextUrl.pathname.startsWith("/signup");
+            const isOnHome = nextUrl.pathname.startsWith("/home");
+
             if (isOnHome) {
-              if (isLoggedIn)  return true;
+              if (isLoggedIn)  {
+                return true;
+              }
               return false; // Redirect unauthenticated users to login page
-            } else if (isLoggedIn) {
-              return Response.redirect(new URL('/login', nextUrl));
+            } else if (isLoggedIn && !isOnHome) {
+              return Response.redirect(new URL('/home', nextUrl));
+            } else if(isSignUp && !isLoggedIn){
+              return true;
             }
-            return true;
+            return false;
           },
           async session({ session, token }) {
             // session 객체에 사용자 데이터를 포함시킵니다.
@@ -44,26 +50,8 @@ export const authConfig:NextAuthConfig = {
               token.picture = user.image;
           }
           return token;
-      },
+      }, 
 
     },
     providers: [],
 } satisfies NextAuthConfig;
-
-// declare module "next-auth" {
-//   interface Session {
-//     user: {
-//       id: string;
-//       email: string;
-//       name: string;
-//       image: string;
-//     } & DefaultSession["user"];
-//   }
-
-//   interface JWT {
-//     id: string;
-//     email: string;
-//     name: string;
-//     picture: string;
-//   }
-// }

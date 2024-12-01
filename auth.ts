@@ -3,7 +3,7 @@ import { authConfig } from "./auth.config";
 import Kakao from "next-auth/providers/kakao";
 import Naver from "next-auth/providers/naver";
 import Credentials from "next-auth/providers/credentials";
-import { SupabaseAdapter } from "@auth/supabase-adapter";
+// import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { z } from "zod";
 import type { User } from "./src/app/lib/definitions";
 import { supabase } from "./src/app/lib/supabase";
@@ -59,35 +59,33 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
         }
     }),
     Credentials({
-      async authorize(credential, request) {
-          const response = await fetch(request)
-          if (!response.ok) return null
-          return (await response.json()) ?? null
+      credentials: {
+        email: {label: "Email", type: "email"},
+        password: {label: "Password", type: "password"}
+      },
+      async authorize(credentials) {
+          // const response = await fetch(request)
+          // if (!response.ok) return null
+          // return (await response.json()) ?? null
 
-        // const parsedCredentials = z
-        // .object({ email: z.string().email(), password: z.string().min(6) })
-        // .safeParse(credentials);
+        const parsedCredentials = z
+        .object({ email: z.string().email(), password: z.string().min(6) })
+        .safeParse(credentials);
 
-        // if (parsedCredentials.success) {
-        //     const { email, password } = parsedCredentials.data;
+        if (parsedCredentials.success) {
+            const { email, password } = parsedCredentials.data;
 
-        //     const user = await getUser(email);
-        //     if(user) console.log(user.email);
-        //     if (!user) return null;
-        //     const passwordsMatch = await bcrypt.compare(password, user.password);
-        //     console.log("authorize");
-        //     if (passwordsMatch) return user;
-        //   }
+            const user = await getUser(email);
+            if(user) console.log(user.email);
+            if (!user) return null;
+            const passwordsMatch = await bcrypt.compare(password, user.password);
+            console.log("authorize");
+            if (passwordsMatch) return user;
+          }
    
-        //   console.log('Invalid credentials');
-        //   return null;
+          console.log('Invalid credentials1 Please Sign Up');
+          return null;
     },
-//       async authorize(credentials, request) { // you have access to the original request as well
-//   if(!isValidCredentials(credentials)) {
-//      throw new CustomError()
-//   }
-//   return await getUser(credentials) // assuming it returns a User or null
-// }
     }
   )
 ],
